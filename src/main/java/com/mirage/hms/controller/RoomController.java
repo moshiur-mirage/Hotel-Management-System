@@ -5,7 +5,7 @@
  */
 package com.mirage.hms.controller;
 
-import com.mirage.hms.dao.RoomDao;
+import com.mirage.hms.service.interfaces.RoomService;
 import com.mirage.hms.model.Room;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,23 +29,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoomController {
     
     @Autowired
-    private RoomDao roomDao;
+    private RoomService roomService;
     
     @GetMapping("/room")
     public List<Room>getRoomlist(){
-        return roomDao.viewAllRoom();        
+        return roomService.viewAllRoom();        
     
     }
     
     //create 
     @PostMapping("/room")
     public Room createRoom(@RequestBody Room room){
-        return roomDao.insertRoom(room);
+        return roomService.insertRoom(room);
     }
     // view by id
     @GetMapping("/room/{roomId}")
     public ResponseEntity<Room> getRoom(@PathVariable("roomId") Integer roomId){
-        Room room = roomDao.getOneRoom(roomId);
+        Room room = roomService.getOneRoom(roomId);
         if(room == null){
             //no room found in browser
             return new ResponseEntity<Room>(HttpStatus.NOT_FOUND);
@@ -59,7 +59,7 @@ public class RoomController {
     public ResponseEntity<Room> updateRoom(@PathVariable("roomId") Integer roomId, @RequestBody Room room) {
         System.out.println("Updating Room " + roomId);
          
-        Room cr = roomDao.getOneRoom(roomId);
+        Room cr = roomService.getOneRoom(roomId);
          
         if (cr==null) {
             System.out.println("Room with id " + roomId + " not found");
@@ -75,7 +75,7 @@ public class RoomController {
         cr.setDesc(room.getDesc());
         
          
-        roomDao.updateRoom(cr);
+        roomService.updateRoom(cr);
         return new ResponseEntity<Room>(cr, HttpStatus.OK);
     }
     
@@ -85,13 +85,13 @@ public class RoomController {
     public ResponseEntity<Room> deleteRoom(@PathVariable("roomId") Integer roomId) {
         System.out.println("Fetching & Deleting Category with id " + roomId);
 
-        Room room = roomDao.getOneRoom(roomId);
+        Room room = roomService.getOneRoom(roomId);
         if (room == null) {
             System.out.println("Unable to delete. Category with id " + roomId + " not found");
             return new ResponseEntity<Room>(HttpStatus.NOT_FOUND);
         }
 
-        roomDao.deleteRoom(roomId);
+        roomService.deleteRoom(roomId);
         return new ResponseEntity<Room>(HttpStatus.NO_CONTENT);
     }
 }

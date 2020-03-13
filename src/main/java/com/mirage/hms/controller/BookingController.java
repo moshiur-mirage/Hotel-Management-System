@@ -5,7 +5,7 @@
  */
 package com.mirage.hms.controller;
 
-import com.mirage.hms.dao.BookingDao;
+import com.mirage.hms.service.interfaces.BookingService;
 import com.mirage.hms.model.Booking;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,24 +29,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookingController {
     
     @Autowired
-    private BookingDao bookingDao;
+    private BookingService bookingService;
     
     //show all
     @GetMapping("/booking")
     public List<Booking>getBookinglist(){
-        return bookingDao.viewAllBooking();        
+        return bookingService.viewAllBooking();        
     }
     
     
     //create 
     @PostMapping("/booking")
     public Booking createBooking(@RequestBody Booking booking){
-        return bookingDao.insertBooking(booking);
+        return bookingService.insertBooking(booking);
     }
     // view by id
     @GetMapping("/booking/{bookingId}")
     public ResponseEntity<Booking> getBooking(@PathVariable("bookingId") Integer bookingId){
-        Booking booking = bookingDao.getOneBooking(bookingId);
+        Booking booking = bookingService.getOneBooking(bookingId);
         if(booking == null){
             //no booking found in browser
             return new ResponseEntity<Booking>(HttpStatus.NOT_FOUND);
@@ -60,7 +60,7 @@ public class BookingController {
     public ResponseEntity<Booking> updateBooking(@PathVariable("bookingId") Integer bookingId, @RequestBody Booking booking) {
         System.out.println("Updating Booking " + bookingId);
          
-        Booking currentBooking = bookingDao.getOneBooking(bookingId);
+        Booking currentBooking = bookingService.getOneBooking(bookingId);
          
         if (currentBooking==null) {
             System.out.println("Booking with id " + bookingId + " not found");
@@ -78,23 +78,23 @@ public class BookingController {
         
         
          
-        bookingDao.updateBooking(currentBooking);
+        bookingService.updateBooking(currentBooking);
         return new ResponseEntity<Booking>(currentBooking, HttpStatus.OK);
     }
     
     
     
     @DeleteMapping("/booking/{bookingId}")
-    public ResponseEntity<Booking> deleteUser(@PathVariable("bookingId") Integer bookingId) {
+    public ResponseEntity<Booking> deleteBooking(@PathVariable("bookingId") Integer bookingId) {
         System.out.println("Fetching & Deleting Category with id " + bookingId);
 
-        Booking booking = bookingDao.getOneBooking(bookingId);
+        Booking booking = bookingService.getOneBooking(bookingId);
         if (booking == null) {
             System.out.println("Unable to delete. Category with id " + bookingId + " not found");
             return new ResponseEntity<Booking>(HttpStatus.NOT_FOUND);
         }
 
-        bookingDao.deleteBooking(bookingId);
+        bookingService.deleteBooking(bookingId);
         return new ResponseEntity<Booking>(HttpStatus.NO_CONTENT);
     }
 }

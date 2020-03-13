@@ -5,7 +5,7 @@
  */
 package com.mirage.hms.controller;
 
-import com.mirage.hms.dao.RoomtypeDao;
+import com.mirage.hms.service.interfaces.RoomtypeService;
 import com.mirage.hms.model.Roomtype;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,24 +28,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin")
 public class RoomtypeController {
     @Autowired
-    private RoomtypeDao roomtypeDao;
+    private RoomtypeService roomtypeService;
     
     //show all
     @GetMapping("/roomtype")
     public List<Roomtype>getRoomtypelist(){
-        return roomtypeDao.viewAllRoomtype();        
+        return roomtypeService.viewAllRoomtype();        
     }
     
     
     //create 
     @PostMapping("/roomtype")
     public Roomtype createRoomtype(@RequestBody Roomtype roomtype){
-        return roomtypeDao.insertRoomtype(roomtype);
+        return roomtypeService.insertRoomtype(roomtype);
     }
     // view by id
     @GetMapping("/roomtype/{roomtypeId}")
     public ResponseEntity<Roomtype> getRoomtype(@PathVariable("roomtypeId") Integer roomtypeId){
-        Roomtype roomtype = roomtypeDao.getOneRoomtype(roomtypeId);
+        Roomtype roomtype = roomtypeService.getOneRoomtype(roomtypeId);
         if(roomtype == null){
             //no roomtype found in browser
             return new ResponseEntity<Roomtype>(HttpStatus.NOT_FOUND);
@@ -59,7 +59,7 @@ public class RoomtypeController {
     public ResponseEntity<Roomtype> updateRoomtype(@PathVariable("roomtypeId") Integer roomtypeId, @RequestBody Roomtype roomtype) {
         System.out.println("Updating Roomtype " + roomtypeId);
          
-        Roomtype currentRoomtype = roomtypeDao.getOneRoomtype(roomtypeId);
+        Roomtype currentRoomtype = roomtypeService.getOneRoomtype(roomtypeId);
          
         if (currentRoomtype==null) {
             System.out.println("Roomtype with id " + roomtypeId + " not found");
@@ -71,23 +71,23 @@ public class RoomtypeController {
         currentRoomtype.setDesc(roomtype.getDesc());
         
          
-        roomtypeDao.updateRoomtype(currentRoomtype);
+        roomtypeService.updateRoomtype(currentRoomtype);
         return new ResponseEntity<Roomtype>(currentRoomtype, HttpStatus.OK);
     }
     
     
     
     @DeleteMapping("/roomtype/{roomtypeId}")
-    public ResponseEntity<Roomtype> deleteUser(@PathVariable("roomtypeId") Integer roomtypeId) {
+    public ResponseEntity<Roomtype> deleteRoomType(@PathVariable("roomtypeId") Integer roomtypeId) {
         System.out.println("Fetching & Deleting Category with id " + roomtypeId);
 
-        Roomtype roomtype = roomtypeDao.getOneRoomtype(roomtypeId);
+        Roomtype roomtype = roomtypeService.getOneRoomtype(roomtypeId);
         if (roomtype == null) {
             System.out.println("Unable to delete. Category with id " + roomtypeId + " not found");
             return new ResponseEntity<Roomtype>(HttpStatus.NOT_FOUND);
         }
 
-        roomtypeDao.deleteRoomtype(roomtypeId);
+        roomtypeService.deleteRoomtype(roomtypeId);
         return new ResponseEntity<Roomtype>(HttpStatus.NO_CONTENT);
     }
 }

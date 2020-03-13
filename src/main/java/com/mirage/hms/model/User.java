@@ -26,18 +26,18 @@ public class User  implements java.io.Serializable {
      private String name;
      private String password;
      private Date createDate;
-     private Date lastLogin;
+     
 
     public User() {
     }
 
-    public User(Integer userId, Integer roleId, String name, String password, Date createDate, Date lastLogin) {
+    public User(Integer userId, Integer roleId, String name, String password, Date createDate) {
         this.userId = userId;
         this.roleId = roleId;
         this.name = name;
         this.password = password;
         this.createDate = createDate;
-        this.lastLogin = lastLogin;
+        
     }
 
     @Id
@@ -82,13 +82,7 @@ public class User  implements java.io.Serializable {
         this.createDate = createDate;
     }
 
-    public Date getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(Date lastLogin) {
-        this.lastLogin = lastLogin;
-    }
+    
 
 
     

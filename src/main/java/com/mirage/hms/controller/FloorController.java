@@ -5,7 +5,7 @@
  */
 package com.mirage.hms.controller;
 
-import com.mirage.hms.dao.FloorDao;
+import com.mirage.hms.service.interfaces.FloorService;
 import com.mirage.hms.model.Floor;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,24 +28,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value= "/admin/")
 public class FloorController {
     @Autowired
-    private FloorDao floorDao;
+    private FloorService floorService;
     
     //show all
     @GetMapping("/floor")
     public List<Floor>getFloorlist(){
-        return floorDao.viewAllFloor();        
+        return floorService.viewAllFloor();        
     }
     
     
     //create 
     @PostMapping("/floor")
     public Floor createFloor(@RequestBody Floor floor){
-        return floorDao.insertFloor(floor);
+        return floorService.insertFloor(floor);
     }
     // view by id
     @GetMapping("/floor/{floorId}")
     public ResponseEntity<Floor> getFloor(@PathVariable("floorId") Integer floorId){
-        Floor floor = floorDao.getOneFloor(floorId);
+        Floor floor = floorService.getOneFloor(floorId);
         if(floor == null){
             //no floor found in browser
             return new ResponseEntity<Floor>(HttpStatus.NOT_FOUND);
@@ -59,7 +59,7 @@ public class FloorController {
     public ResponseEntity<Floor> updateFloor(@PathVariable("floorId") Integer floorId, @RequestBody Floor floor) {
         System.out.println("Updating Floor " + floorId);
          
-        Floor currentFloor = floorDao.getOneFloor(floorId);
+        Floor currentFloor = floorService.getOneFloor(floorId);
          
         if (currentFloor==null) {
             System.out.println("Floor with id " + floorId + " not found");
@@ -72,23 +72,23 @@ public class FloorController {
         currentFloor.setFloorId(floor.getFloorId());
         
          
-        floorDao.updateFloor(currentFloor);
+        floorService.updateFloor(currentFloor);
         return new ResponseEntity<Floor>(currentFloor, HttpStatus.OK);
     }
     
     
     
     @DeleteMapping("/floor/{floorId}")
-    public ResponseEntity<Floor> deleteUser(@PathVariable("floorId") Integer floorId) {
+    public ResponseEntity<Floor> deleteFloor(@PathVariable("floorId") Integer floorId) {
         System.out.println("Fetching & Deleting Category with id " + floorId);
 
-        Floor floor = floorDao.getOneFloor(floorId);
+        Floor floor = floorService.getOneFloor(floorId);
         if (floor == null) {
             System.out.println("Unable to delete. Category with id " + floorId + " not found");
             return new ResponseEntity<Floor>(HttpStatus.NOT_FOUND);
         }
 
-        floorDao.deleteFloor(floorId);
+        floorService.deleteFloor(floorId);
         return new ResponseEntity<Floor>(HttpStatus.NO_CONTENT);
     }
 }

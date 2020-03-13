@@ -5,7 +5,7 @@
  */
 package com.mirage.hms.controller;
 
-import com.mirage.hms.dao.RoleDao;
+import com.mirage.hms.service.interfaces.RoleService;
 import com.mirage.hms.model.Role;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,24 +29,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoleController {
 
     @Autowired
-    private RoleDao roleDao;
+    private RoleService roleService;
     
     //show all
     @GetMapping("/role")
     public List<Role>getRolelist(){
-        return roleDao.viewAllRole();        
+        return roleService.viewAllRole();        
     }
     
     
     //create 
     @PostMapping("/role")
     public Role createRole(@RequestBody Role role){
-        return roleDao.insertRole(role);
+        return roleService.insertRole(role);
     }
     // view by id
     @GetMapping("/role/{roleId}")
     public ResponseEntity<Role> getRole(@PathVariable("roleId") Integer roleId){
-        Role role = roleDao.getOneRole(roleId);
+        Role role = roleService.getOneRole(roleId);
         if(role == null){
             //no role found in browser
             return new ResponseEntity<Role>(HttpStatus.NOT_FOUND);
@@ -60,7 +60,7 @@ public class RoleController {
     public ResponseEntity<Role> updateRole(@PathVariable("roleId") Integer roleId, @RequestBody Role role) {
         System.out.println("Updating Role " + roleId);
          
-        Role currentRole = roleDao.getOneRole(roleId);
+        Role currentRole = roleService.getOneRole(roleId);
          
         if (currentRole==null) {
             System.out.println("Role with id " + roleId + " not found");
@@ -72,23 +72,23 @@ public class RoleController {
         currentRole.setRoleId(role.getRoleId());
         
          
-        roleDao.updateRole(currentRole);
+        roleService.updateRole(currentRole);
         return new ResponseEntity<Role>(currentRole, HttpStatus.OK);
     }
     
     
     
     @DeleteMapping("/role/{roleId}")
-    public ResponseEntity<Role> deleteUser(@PathVariable("roleId") Integer roleId) {
+    public ResponseEntity<Role> deleteRole(@PathVariable("roleId") Integer roleId) {
         System.out.println("Fetching & Deleting Category with id " + roleId);
 
-        Role role = roleDao.getOneRole(roleId);
+        Role role = roleService.getOneRole(roleId);
         if (role == null) {
             System.out.println("Unable to delete. Category with id " + roleId + " not found");
             return new ResponseEntity<Role>(HttpStatus.NOT_FOUND);
         }
 
-        roleDao.deleteRole(roleId);
+        roleService.deleteRole(roleId);
         return new ResponseEntity<Role>(HttpStatus.NO_CONTENT);
     }
     
