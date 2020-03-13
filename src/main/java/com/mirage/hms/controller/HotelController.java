@@ -5,7 +5,7 @@
  */
 package com.mirage.hms.controller;
 
-import com.mirage.hms.dao.HotelDao;
+import com.mirage.hms.service.interfaces.HotelService;
 import com.mirage.hms.model.Hotel;
 import com.mirage.hms.model.User;
 import java.util.List;
@@ -29,23 +29,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin")
 public class HotelController {
     @Autowired
-    private HotelDao hotelDao;
+    private HotelService hotelService;
     
     @GetMapping("/hotel")
     public List<Hotel>getHotellist(){
-        return hotelDao.viewAllHotel();        
+        return hotelService.viewAllHotel();        
     
     }
     
     //create 
     @PostMapping("/hotel")
     public Hotel createHotel(@RequestBody Hotel hotel){
-        return hotelDao.insertHotel(hotel);
+        return hotelService.insertHotel(hotel);
     }
     // view by id
     @GetMapping("/hotel/{hotelId}")
     public ResponseEntity<Hotel> getHotel(@PathVariable("hotelId") Integer hotelId){
-        Hotel hotel = hotelDao.getOneHotel(hotelId);
+        Hotel hotel = hotelService.getOneHotel(hotelId);
         if(hotel == null){
             //no hotel found in browser
             return new ResponseEntity<Hotel>(HttpStatus.NOT_FOUND);
@@ -59,7 +59,7 @@ public class HotelController {
     public ResponseEntity<Hotel> updateHotel(@PathVariable("hotelId") Integer hotelId, @RequestBody Hotel hotel) {
         System.out.println("Updating Hotel " + hotelId);
          
-        Hotel currentHotel = hotelDao.getOneHotel(hotelId);
+        Hotel currentHotel = hotelService.getOneHotel(hotelId);
          
         if (currentHotel==null) {
             System.out.println("Hotel with id " + hotelId + " not found");
@@ -71,7 +71,7 @@ public class HotelController {
         currentHotel.setLocation(hotel.getLocation());
         
          
-        hotelDao.updateHotel(currentHotel);
+        hotelService.updateHotel(currentHotel);
         return new ResponseEntity<Hotel>(currentHotel, HttpStatus.OK);
     }
     
@@ -81,13 +81,13 @@ public class HotelController {
     public ResponseEntity<Hotel> deleteHotel(@PathVariable("hotelId") Integer hotelId) {
         System.out.println("Fetching & Deleting Category with id " + hotelId);
 
-        Hotel hotel = hotelDao.getOneHotel(hotelId);
+        Hotel hotel = hotelService.getOneHotel(hotelId);
         if (hotel == null) {
             System.out.println("Unable to delete. Category with id " + hotelId + " not found");
             return new ResponseEntity<Hotel>(HttpStatus.NOT_FOUND);
         }
 
-        hotelDao.deleteHotel(hotelId);
+        hotelService.deleteHotel(hotelId);
         return new ResponseEntity<Hotel>(HttpStatus.NO_CONTENT);
     }
 }

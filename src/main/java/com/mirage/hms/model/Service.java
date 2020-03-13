@@ -21,7 +21,7 @@ public class Service  implements java.io.Serializable {
 
 
      private int serviceId;
-     private Integer userId;
+     private Integer customerId;
      private Date date;
      private Double fee;
 
@@ -32,9 +32,9 @@ public class Service  implements java.io.Serializable {
     public Service(int serviceId) {
         this.serviceId = serviceId;
     }
-    public Service(int serviceId, Integer userId, Date date, Double fee) {
+    public Service(int serviceId, Integer customerId, Date date, Double fee) {
        this.serviceId = serviceId;
-       this.userId = userId;
+       this.customerId = customerId;
        this.date = date;
        this.fee = fee;
     }
@@ -52,13 +52,13 @@ public class Service  implements java.io.Serializable {
     }
 
     
-    @Column(name="userId")
-    public Integer getUserId() {
-        return this.userId;
+    @Column(name="customerId")
+    public Integer getCustomerId() {
+        return this.customerId;
     }
     
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
     }
 
     @Temporal(TemporalType.DATE)

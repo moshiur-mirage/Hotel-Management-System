@@ -5,7 +5,7 @@
  */
 package com.mirage.hms.controller;
 
-import com.mirage.hms.dao.UserDao;
+import com.mirage.hms.service.interfaces.UserService;
 import com.mirage.hms.model.User;
 
 import java.util.List;
@@ -29,24 +29,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value="/admin/")
 public class UserController {
     @Autowired
-    private UserDao userDao;
+    private UserService userService;
     
     //show all
     @GetMapping("/user")
     public List<User>getUserlist(){
-        return userDao.viewAllUser();        
+        return userService.viewAllUser();        
     
+    }
+    
+    //get user by name
+    @GetMapping("/user/name/{name}")
+    public ResponseEntity<User> getUserByName(@PathVariable("name") String name){
+        User user  = userService.viewUserByName(name);
+        if(user == null){
+            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<User>(user,HttpStatus.OK);
     }
     
     //create 
     @PostMapping("/user")
     public User createUser(@RequestBody User user){
-        return userDao.insertUser(user);
+        return userService.insertUser(user);
     }
     // view by id
     @GetMapping("/user/{userId}")
     public ResponseEntity<User> getUser(@PathVariable("userId") Integer userId){
-        User user = userDao.getOneUser(userId);
+        User user = userService.getOneUser(userId);
         if(user == null){
             //no user found in browser
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
@@ -60,7 +70,7 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable("userId") Integer userId, @RequestBody User user) {
         System.out.println("Updating User " + userId);
          
-        User currentUser = userDao.getOneUser(userId);
+        User currentUser = userService.getOneUser(userId);
          
         if (currentUser==null) {
             System.out.println("User with id " + userId + " not found");
@@ -72,10 +82,10 @@ public class UserController {
         currentUser.setRoleId(user.getRoleId());
         currentUser.setPassword(user.getPassword());
         currentUser.setCreateDate(user.getCreateDate());
-        currentUser.setLastLogin(user.getLastLogin());       
+              
         
          
-        userDao.updateUser(currentUser);
+        userService.updateUser(currentUser);
         return new ResponseEntity<User>(currentUser, HttpStatus.OK);
     }
     
@@ -85,13 +95,13 @@ public class UserController {
     public ResponseEntity<User> deleteUser(@PathVariable("userId") Integer userId) {
         System.out.println("Fetching & Deleting Category with id " + userId);
 
-        User user = userDao.getOneUser(userId);
+        User user = userService.getOneUser(userId);
         if (user == null) {
             System.out.println("Unable to delete. Category with id " + userId + " not found");
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
         }
 
-        userDao.deleteUser(userId);
+        userService.deleteUser(userId);
         return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
     }
 }

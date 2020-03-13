@@ -21,7 +21,7 @@ public class Payment  implements java.io.Serializable {
 
 
      private int paymentId;
-     private Integer userId;
+     private Integer customerId;
      private Integer bookingId;
      private Double amount;
      private Date date;
@@ -33,9 +33,9 @@ public class Payment  implements java.io.Serializable {
     public Payment(int paymentId) {
         this.paymentId = paymentId;
     }
-    public Payment(int paymentId, Integer userId, Integer bookingId, Double amount, Date date) {
+    public Payment(int paymentId, Integer customerId, Integer bookingId, Double amount, Date date) {
        this.paymentId = paymentId;
-       this.userId = userId;
+       this.customerId = customerId;
        this.bookingId = bookingId;
        this.amount = amount;
        this.date = date;
@@ -54,13 +54,13 @@ public class Payment  implements java.io.Serializable {
     }
 
     
-    @Column(name="userId")
-    public Integer getUserId() {
-        return this.userId;
+    @Column(name="customerId")
+    public Integer getCustomerId() {
+        return this.customerId;
     }
     
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
     }
 
     

@@ -5,7 +5,7 @@
  */
 package com.mirage.hms.controller;
 
-import com.mirage.hms.dao.MethodDao;
+import com.mirage.hms.service.interfaces.MethodService;
 import com.mirage.hms.model.Method;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,24 +29,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class MethodController {
     
      @Autowired
-    private MethodDao methodDao;
+    private MethodService methodService;
     
     //show all
     @GetMapping("/method")
     public List<Method>getMethodlist(){
-        return methodDao.viewAllMethod();        
+        return methodService.viewAllMethod();        
     }
     
     
     //create 
     @PostMapping("/method")
     public Method createMethod(@RequestBody Method method){
-        return methodDao.insertMethod(method);
+        return methodService.insertMethod(method);
     }
     // view by id
     @GetMapping("/method/{methodId}")
     public ResponseEntity<Method> getMethod(@PathVariable("methodId") Integer methodId){
-        Method method = methodDao.getOneMethod(methodId);
+        Method method = methodService.getOneMethod(methodId);
         if(method == null){
             //no method found in browser
             return new ResponseEntity<Method>(HttpStatus.NOT_FOUND);
@@ -60,7 +60,7 @@ public class MethodController {
     public ResponseEntity<Method> updateMethod(@PathVariable("methodId") Integer methodId, @RequestBody Method method) {
         System.out.println("Updating Method " + methodId);
          
-        Method currentMethod = methodDao.getOneMethod(methodId);
+        Method currentMethod = methodService.getOneMethod(methodId);
          
         if (currentMethod==null) {
             System.out.println("Method with id " + methodId + " not found");
@@ -73,23 +73,23 @@ public class MethodController {
         currentMethod.setDesc(method.getDesc());
         
          
-        methodDao.updateMethod(currentMethod);
+        methodService.updateMethod(currentMethod);
         return new ResponseEntity<Method>(currentMethod, HttpStatus.OK);
     }
     
     
     
     @DeleteMapping("/method/{methodId}")
-    public ResponseEntity<Method> deleteUser(@PathVariable("methodId") Integer methodId) {
+    public ResponseEntity<Method> deleteMethod(@PathVariable("methodId") Integer methodId) {
         System.out.println("Fetching & Deleting Category with id " + methodId);
 
-        Method method = methodDao.getOneMethod(methodId);
+        Method method = methodService.getOneMethod(methodId);
         if (method == null) {
             System.out.println("Unable to delete. Category with id " + methodId + " not found");
             return new ResponseEntity<Method>(HttpStatus.NOT_FOUND);
         }
 
-        methodDao.deleteMethod(methodId);
+        methodService.deleteMethod(methodId);
         return new ResponseEntity<Method>(HttpStatus.NO_CONTENT);
     }
 }

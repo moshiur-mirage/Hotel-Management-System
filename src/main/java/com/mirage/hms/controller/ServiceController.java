@@ -5,7 +5,7 @@
  */
 package com.mirage.hms.controller;
 
-import com.mirage.hms.dao.ServiceDao;
+import com.mirage.hms.service.interfaces.ServiceService;
 import com.mirage.hms.model.Service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,27 +25,27 @@ import org.springframework.web.bind.annotation.RestController;
  * @author mirage
  */
 @RestController
-@RequestMapping("admin")
+@RequestMapping("/admin/")
 public class ServiceController {
     @Autowired
-    private ServiceDao serviceDao;
+    private ServiceService serviceService;
     
     //show all
     @GetMapping("/service")
     public List<Service>getServicelist(){
-        return serviceDao.viewAllService();        
+        return serviceService.viewAllService();        
     }
     
     
     //create 
     @PostMapping("/service")
     public Service createService(@RequestBody Service service){
-        return serviceDao.insertService(service);
+        return serviceService.insertService(service);
     }
     // view by id
     @GetMapping("/service/{serviceId}")
     public ResponseEntity<Service> getService(@PathVariable("serviceId") Integer serviceId){
-        Service service = serviceDao.getOneService(serviceId);
+        Service service = serviceService.getOneService(serviceId);
         if(service == null){
             //no service found in browser
             return new ResponseEntity<Service>(HttpStatus.NOT_FOUND);
@@ -59,7 +59,7 @@ public class ServiceController {
     public ResponseEntity<Service> updateService(@PathVariable("serviceId") Integer serviceId, @RequestBody Service service) {
         System.out.println("Updating Service " + serviceId);
          
-        Service currentService = serviceDao.getOneService(serviceId);
+        Service currentService = serviceService.getOneService(serviceId);
          
         if (currentService==null) {
             System.out.println("Service with id " + serviceId + " not found");
@@ -67,30 +67,30 @@ public class ServiceController {
         }
  
         
-        currentService.setUserId(service.getUserId());
+        currentService.setCustomerId(service.getCustomerId());
         currentService.setFee(service.getFee());
         currentService.setDate(service.getDate());
         currentService.setServiceId(service.getServiceId());
         
         
          
-        serviceDao.updateService(currentService);
+        serviceService.updateService(currentService);
         return new ResponseEntity<Service>(currentService, HttpStatus.OK);
     }
     
     
-    
+//    delete service
     @DeleteMapping("/service/{serviceId}")
-    public ResponseEntity<Service> deleteUser(@PathVariable("serviceId") Integer serviceId) {
+    public ResponseEntity<Service> deleteService(@PathVariable("serviceId") Integer serviceId) {
         System.out.println("Fetching & Deleting Category with id " + serviceId);
 
-        Service service = serviceDao.getOneService(serviceId);
+        Service service = serviceService.getOneService(serviceId);
         if (service == null) {
             System.out.println("Unable to delete. Category with id " + serviceId + " not found");
             return new ResponseEntity<Service>(HttpStatus.NOT_FOUND);
         }
 
-        serviceDao.deleteService(serviceId);
+        serviceService.deleteService(serviceId);
         return new ResponseEntity<Service>(HttpStatus.NO_CONTENT);
     }
 }
